@@ -29,35 +29,23 @@ L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 
-//Capa pob cargada en leflet 
+//Capa pob cargada en leflet WMS
+var POBMAS = L.tileLayer.wms("http://localhost:8080/geoserver/test/wms?service=WMS", {
+        layers: "POB",
+        format: 'image/jpeg',
+        transparent: true,
+        opacity: 0.4
+      }).addTo(map);
 
 
-function style(feature) {
-    return {
-        weight: 2,
-        opacity: 0.5,
-        color: '#F11818',
-        dashArray: '3',
-        fillOpacity: 0.5
-    };
-}
 
-var mayor =L.geoJson(POB, {style: style}).addTo(map);
-
-
-//Capa pobmenor cargada en leflet 
-
-function style1(feature) {
-    return {
-        weight: 2,
-        opacity: 0.5,
-        color: '#21C915',
-        dashArray: '3',
-        fillOpacity: 0.5
-    };
-}
-
-var menor = L.geoJson(POBMENOR, {style: style1}).addTo(map);
+//Capa pobmenor cargada en leflet WMS 
+var POBMENOS = L.tileLayer.wms("http://localhost:8080/geoserver/TFM/wms?service=WMS", {
+        layers: "POBMENOR",
+        format: 'image/jpeg',
+        transparent: true,
+        opacity: 0.4
+      }).addTo(map);
 
 
 //Función de cirunferencia cuando se clicka en el mapa 
