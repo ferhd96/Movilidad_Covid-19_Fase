@@ -3,7 +3,7 @@ Este visor ha sido elaborado gracias a librería de código abierto Leaflet. En 
 mientras los municipios en verde con menos de 5000 habitantes la limitación a la movilidad no es tan restrictiva. Además en este visor se 
 ha incoporado una función capaz de dibujar un circulo de radio de 1 kilometro cuando se clicka sobre el mapa. 
 
-#Funciones principales del visor
+# Funciones principales del visor
 
 
 
