@@ -1,0 +1,112 @@
+<!DOCTYPE html><html>
+<meta charset="utf-8" />
+<head>
+	<script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+ <link rel="stylesheet" href="map.css">
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+  crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+  integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+  crossorigin=""></script>
+   <!-- Load Esri Leaflet from CDN -->
+  <script src="https://unpkg.com/esri-leaflet@2.4.0/dist/esri-leaflet.js"
+  integrity="sha512-kq0i5Xvdq0ii3v+eRLDpa++uaYPlTuFaOYrfQ0Zdjmms/laOwIvLMAxh7cj1eTqqGG47ssAcTY4hjkWydGt6Eg=="
+  crossorigin="">    
+  </script>
+  <script type="text/javascript" src="leaflet-gps.js"></script>
+  <link rel="stylesheet" href="leaflet-gps.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+  <link href='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css' rel='stylesheet' />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+ </head>
+  <body>
+  <div id="map"></div>
+  
+ <script>
+ 
+var map = L.map('map').
+setView([40.438, -3.819], 
+9);
+ 
+L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a> Autor:Fernando Hernández',
+    maxZoom: 18
+}).addTo(map);
+
+
+
+ L.esri.featureLayer({
+    url: 'https://services7.arcgis.com/lTrEzFGSU2ayogtj/arcgis/rest/services/POB1/FeatureServer/0?token=GGX3GH1114kVn71bhZ-uz5GcJm6UX081OUjkhNi5VUB5QygpwNZtGkE8H5dppg_sghnc7sPRXN7wLxBHHccGdLv94fLNr0mrec-z7FKCqKhWSF21wzOram2CBU6XcQIdBp-NjNsYzc1l3BN2H-8GDACBL7EBLr2H3LfumlnuEQMpyB3sqLll4_JqrHq7_y6oa5fuiG6hhkCv8sYLSU8NyxuJWrnxwe4hNWU44SZr7ajJVq_VHtYJZsPRZGWLMoealnUMr2tjy1trP0PhQIMM2g..',
+     style: function (feature) {
+    return { color: "#F11818" }
+  }
+}).addTo(map);
+
+ L.esri.featureLayer({
+    url: 'https://services7.arcgis.com/lTrEzFGSU2ayogtj/arcgis/rest/services/POBMENOR/FeatureServer/0?token=x4FomKSrXvab8-ZYW3wShb5hG08k-QtCb2TWrLX7qK6_wMPUrC6BiHQ5NTSLJ_jZe46Np5ACSWujg5sK6HyERZVaaDdboV_VAagV-OYFzTWHKEtVyJCx6vGRMUEOx3q6ioSo4hJEiPdqVLVnm619nNCVyDRhn30FN1hIy8psFoqCdA5XeuIdMgMg0noKNbXa284C3NOHT2lDs01GFMqvQhvwDM8s-AxURmbKwNVOX6QOaPUwe9H0WzPMLHtj8WGmZFP1WuarPzNAwX9tcEYAWg..',
+     style: function (feature) {
+    return { color: "green" }
+  }
+}).addTo(map);
+
+//Función de cirunferencia cuando se clicka en el mapa 
+var clickCircle;
+
+  function onMapClick(e) {
+    if (clickCircle != undefined) {
+      map.removeLayer(clickCircle);
+    };
+    clickCircle = L.circle(e.latlng, 1000, {
+      color: '#121310',
+      fillOpacity: 0,
+      opacity: 0.5
+    }).addTo(map);
+  }
+
+  map.on('click', onMapClick);
+
+
+
+//Legenda 
+var legend = L.control({ position: "bottomright" });
+
+legend.onAdd = function(map) {
+  var div = L.DomUtil.create("div", "legend");
+  div.innerHTML += "<h4>Leyenda</h4>";
+  div.innerHTML += '<i style="background: #F11818"></i><span>Mayor de 5000 hab</span><br>';
+  div.innerHTML += '<i style="background: #21C915"></i><span>Menor de 5000 hab</span><br>';
+
+  return div;
+};
+
+legend.addTo(map);
+
+//Ubicación GPS
+var gps = new L.Control.Gps({
+
+autoCenter:true
+});
+gps
+.on('gps:located', function(e) {
+console.log(e.latlng, map.getCenter())
+})
+.on('gps:disabled', function(e) {
+  e.marker.closePopup()
+});
+gps.addTo(map);
+
+//control de la escala 
+var escala = L.control.scale().addTo(map);
+
+//Geocidficador 
+
+L.Control.geocoder({position: "topleft", placeholder: 'Buscar municipio'}).addTo(map);
+
+
+
+ </script>
+ </body> 
+ </html>
